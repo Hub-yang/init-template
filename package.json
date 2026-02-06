@@ -1,0 +1,35 @@
+{
+  "name": "init-template",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.28.2",
+  "description": "",
+  "author": "HuberyYang",
+  "license": "MIT",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hub-yang/**.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hub-yang/**/issues"
+  },
+  "keywords": [
+    "template"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "taze": "npx taze major -r",
+    "license:mit": "npx license MIT",
+    "release": "bumpp && npm publish",
+    "commitlint:init": "npx hubery commitlint-init"
+  },
+  "devDependencies": {
+    "@huberyyang/todo-scripts": "latest"
+  }
+}
