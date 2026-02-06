@@ -17,14 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Replace PROJECT_NAME placeholder
+      - name: Replace variable placeholder
         run: |
-          # 获取当前仓库名
-          REPO_NAME=${{ github.event.repository.name }}
-          echo "Replacing placeholder with: $REPO_NAME"
-          
           # 使用sed替换 README.md 中的变量
-          sed -i "s/PROJECT_NAME/$REPO_NAME/g" README.md
+          # 获取当前仓库名替换REPO_NAME变量
+          REPO_NAME=${{ github.event.repository.name }}
+          sed -i "s/{{REPO_NAME}}/$REPO_NAME/g" README.md
+          # 获取当前用户名替换USER_NAME变量
+          USER_NAME=${{ github.repository_owner }}
+          sed -i "s/{{USER_NAME}}/$USER_NAME/g" README.md
 
       - name: Commit and Push changes
         run: |
