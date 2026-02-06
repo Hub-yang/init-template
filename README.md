@@ -1,5 +1,5 @@
 <!-- name -->
-<h1 align="center">PROJECT_NAME</h1>
+<h1 align="center">init-template</h1>
 
 <!-- badges -->
 <div align="center">
