@@ -12,11 +12,6 @@ on:
   
   # 支持手动触发
   workflow_dispatch:
-    inputs:
-      repo_name:
-        description: '/Hub-yang/50projects-vue3'
-        required: false
-        type: string
 
 jobs:
   sync-files:
@@ -34,8 +29,8 @@ jobs:
       - name: 同步文件到多个仓库
         uses: derberg/manage-files-in-multiple-repositories@v2
         with:
-          # GitHub Token (必须配置,不能使用默认的 GITHUB_TOKEN)
-          # 需要具有 repo 和 workflow 权限
+          # GitHub Token (必须使用 Classic PAT,不能使用 fine-grained token)
+          # 必需权限: repo, workflow, read:org
           # 在仓库设置 -> Secrets and variables -> Actions 中添加
           github_token: ${{ secrets.REPO_SYNC_TOKEN }}
           
@@ -48,11 +43,11 @@ jobs:
           patterns_to_ignore: '.github/workflows/sync-files.yml'
           
           # 要忽略的仓库列表(可选,用逗号分隔)
-          # repos_to_ignore: 'your-username/repo-to-ignore,your-username/another-repo'
+          # 示例: repos_to_ignore: 'your-username/repo-to-ignore,your-username/another-repo'
           
-          # 根据 GitHub Topics 选择要同步的仓库(可选,用逗号分隔)
+          # 根据 GitHub Topics 选择要同步的仓库(推荐使用此方式精确控制)
           # 只同步到包含这些 topics 的仓库
-          # topics_to_include: 'sync-enabled,template'
+          topics_to_include: 'sync-enabled,template'
           
           # 排除私有仓库(可选,默认 false)
           exclude_private: true
@@ -62,7 +57,7 @@ jobs:
           
           # 目标分支匹配模式(可选)
           # 支持正则表达式,多个用逗号分隔
-          # branches: 'main,master,develop'
+          # 示例: branches: 'main,master,develop'
           
           # 提交者用户名
           committer_username: 'github-actions[bot]'
@@ -73,5 +68,5 @@ jobs:
           # 提交信息
           commit_message: 'chore: 从模板仓库同步文件'
           
-          # 手动触发时指定的仓库(可选)
-          repo_name: ${{ github.event.inputs.repo_name }}
+          # PR分支名称(可选,用于标识同步PR)
+          bot_branch_name: 'repo-sync/template-update'
