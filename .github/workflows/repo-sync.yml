@@ -1,0 +1,77 @@
+name: 同步文件到多个仓库
+
+on:
+  # 当推送到 main 分支时自动触发
+  push:
+    branches:
+      - main
+    # 可以指定只监听特定路径的变更
+    paths:
+      - 'LICENSE'
+      # 根据需要添加更多路径
+  
+  # 支持手动触发
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: '/Hub-yang/50projects-vue3'
+        required: false
+        type: string
+
+jobs:
+  sync-files:
+    name: 同步文件
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 检出当前仓库
+      - name: Checkout 源仓库
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # 同步文件到其他仓库
+      - name: 同步文件到多个仓库
+        uses: derberg/manage-files-in-multiple-repositories@v2
+        with:
+          # GitHub Token (必须配置,不能使用默认的 GITHUB_TOKEN)
+          # 需要具有 repo 和 workflow 权限
+          # 在仓库设置 -> Secrets and variables -> Actions 中添加
+          github_token: ${{ secrets.REPO_SYNC_TOKEN }}
+          
+          # 要同步的文件或目录路径(用逗号分隔)
+          # 支持具体文件和目录
+          patterns_to_include: 'LICENSE'
+          
+          # 要忽略的文件(可选)
+          # 例如:忽略当前这个同步workflow文件本身
+          patterns_to_ignore: '.github/workflows/sync-files.yml'
+          
+          # 要忽略的仓库列表(可选,用逗号分隔)
+          # repos_to_ignore: 'your-username/repo-to-ignore,your-username/another-repo'
+          
+          # 根据 GitHub Topics 选择要同步的仓库(可选,用逗号分隔)
+          # 只同步到包含这些 topics 的仓库
+          # topics_to_include: 'sync-enabled,template'
+          
+          # 排除私有仓库(可选,默认 false)
+          exclude_private: true
+          
+          # 排除 fork 的仓库(可选,默认 false)
+          exclude_forked: true
+          
+          # 目标分支匹配模式(可选)
+          # 支持正则表达式,多个用逗号分隔
+          # branches: 'main,master,develop'
+          
+          # 提交者用户名
+          committer_username: 'github-actions[bot]'
+          
+          # 提交者邮箱
+          committer_email: 'github-actions[bot]@users.noreply.github.com'
+          
+          # 提交信息
+          commit_message: 'chore: 从模板仓库同步文件'
+          
+          # 手动触发时指定的仓库(可选)
+          repo_name: ${{ github.event.inputs.repo_name }}
