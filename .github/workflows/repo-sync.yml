@@ -1,12 +1,11 @@
-name: 同步文件到多个仓库 (替代方案)
+name: Repo Files Sync
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/**'
-      - 'shared/**'
+      - 'LICENSE'
   workflow_dispatch:
 
 jobs:
@@ -18,7 +17,7 @@ jobs:
         # 在这里明确列出要同步的目标仓库
         repo:
           - 'Hub-yang/50projects-vue3'
-      fail-fast: false  # 即使某个仓库失败,继续同步其他仓库
+      fail-fast: false
     
     steps:
       - name: Checkout 源仓库
@@ -36,29 +35,38 @@ jobs:
       
       - name: 同步文件
         run: |
-          # 复制指定的文件和目录到目标仓库
-          # 根据需要修改这些路径
+          echo "开始同步文件到 ${{ matrix.repo }}"
           
           # 同步 workflows 目录
           if [ -d "source/.github/workflows" ]; then
+            echo "同步 .github/workflows 目录"
             mkdir -p target/.github/workflows
             cp -r source/.github/workflows/* target/.github/workflows/ || true
-            # 删除同步工作流本身,避免循环
+            # 删除同步工作流本身,避免循环同步
             rm -f target/.github/workflows/alternative-sync.yml
           fi
           
           # 同步 shared 目录
           if [ -d "source/shared" ]; then
+            echo "同步 shared 目录"
             mkdir -p target/shared
             cp -r source/shared/* target/shared/ || true
           fi
           
           # 同步指定的文件
-          [ -f "source/README.md" ] && cp source/README.md target/ || true
-          [ -f "source/LICENSE" ] && cp source/LICENSE target/ || true
+          if [ -f "source/README.md" ]; then
+            echo "同步 README.md"
+            cp source/README.md target/
+          fi
+          
+          if [ -f "source/LICENSE" ]; then
+            echo "同步 LICENSE"
+            cp source/LICENSE target/
+          fi
+          
+          echo "文件同步完成"
       
-      - name: 检查变更
-        id: check_changes
+      - name: 提交并推送变更
         working-directory: target
         run: |
           git config user.name "github-actions[bot]"
@@ -67,54 +75,29 @@ jobs:
           git add -A
           
           if git diff --staged --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "没有文件变更"
+            echo "没有检测到文件变更，跳过提交"
+            echo "SYNC_STATUS=no_changes" >> $GITHUB_ENV
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "检测到文件变更"
+            echo "检测到文件变更，准备提交"
+            git commit -m "chore: synchronize files from init-template repo
+
+          自动从 ${{ github.repository }} 同步更新
+          源提交: ${{ github.sha }}
+          触发事件: ${{ github.event_name }}"
+            
+            git push origin main
+            
+            echo "SYNC_STATUS=synced" >> $GITHUB_ENV
+            echo "✅ 变更已成功推送到 ${{ matrix.repo }}"
           fi
       
-      - name: 创建 Pull Request
-        if: steps.check_changes.outputs.has_changes == 'true'
-        working-directory: target
-        env:
-          GH_TOKEN: ${{ secrets.REPO_SYNC_TOKEN }}
-        run: |
-          BRANCH_NAME="repo-sync/template-update-$(date +%s)"
-          
-          # 创建并切换到新分支
-          git checkout -b $BRANCH_NAME
-          
-          # 提交变更
-          git commit -m "chore: 从模板仓库同步文件
-          
-          自动从 ${{ github.repository }} 同步更新"
-          
-          # 推送分支
-          git push origin $BRANCH_NAME
-          
-          # 创建 Pull Request
-          gh pr create \
-            --title "🔄 从模板仓库同步文件" \
-            --body "此 PR 自动同步了模板仓库的最新变更。
-
-          **同步的内容:**
-          - GitHub Actions workflows
-          - Shared 配置文件
-          - README 和 LICENSE 文件
-          
-          **源仓库:** ${{ github.repository }}
-          **源提交:** ${{ github.sha }}
-          
-          请检查变更内容后合并。" \
-            --base main \
-            --head $BRANCH_NAME
-      
-      - name: 同步结果
+      - name: 同步结果摘要
         if: always()
         run: |
-          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
-            echo "✅ 成功同步到 ${{ matrix.repo }}"
+          if [ "${{ env.SYNC_STATUS }}" == "synced" ]; then
+            echo "::notice::成功同步文件到 ${{ matrix.repo }}"
+          elif [ "${{ env.SYNC_STATUS }}" == "no_changes" ]; then
+            echo "::notice::${{ matrix.repo }} 无需更新，文件已是最新"
           else
-            echo "ℹ️  ${{ matrix.repo }} 无需更新"
+            echo "::warning::${{ matrix.repo }} 同步状态未知"
           fi
