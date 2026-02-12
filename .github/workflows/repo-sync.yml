@@ -17,6 +17,21 @@ jobs:
         # 在这里明确列出要同步的目标仓库
         repo:
           - 'Hub-yang/50projects-vue3'
+          - 'about-me'
+          - 'todo-scripts'
+          - 'create-todo-vue'
+          - 'about-me-vue3'
+          - 'about-me-react'
+          - 'health-admin-nuxt3'
+          - 'my-vue-dev-template'
+          - 'my-react-dev-template'
+          - '50projects-react'
+          - 'equals-demo'
+          - 'frontend-forest'
+          - 'my-blog-new'
+          - 'todo-utils'
+          - 'music-preview'
+          - 'js-equals-demo'
       fail-fast: false
     
     steps:
@@ -38,26 +53,26 @@ jobs:
           echo "开始同步文件到 ${{ matrix.repo }}"
           
           # 同步 workflows 目录
-          if [ -d "source/.github/workflows" ]; then
-            echo "同步 .github/workflows 目录"
-            mkdir -p target/.github/workflows
-            cp -r source/.github/workflows/* target/.github/workflows/ || true
-            # 删除同步工作流本身,避免循环同步
-            rm -f target/.github/workflows/alternative-sync.yml
-          fi
+          # if [ -d "source/.github/workflows" ]; then
+          #   echo "同步 .github/workflows 目录"
+          #   mkdir -p target/.github/workflows
+          #   cp -r source/.github/workflows/* target/.github/workflows/ || true
+          #   # 删除同步工作流本身,避免循环同步
+          #   rm -f target/.github/workflows/alternative-sync.yml
+          # fi
           
-          # 同步 shared 目录
-          if [ -d "source/shared" ]; then
-            echo "同步 shared 目录"
-            mkdir -p target/shared
-            cp -r source/shared/* target/shared/ || true
-          fi
+          # # 同步 shared 目录
+          # if [ -d "source/shared" ]; then
+          #   echo "同步 shared 目录"
+          #   mkdir -p target/shared
+          #   cp -r source/shared/* target/shared/ || true
+          # fi
           
           # 同步指定的文件
-          if [ -f "source/README.md" ]; then
-            echo "同步 README.md"
-            cp source/README.md target/
-          fi
+          # if [ -f "source/README.md" ]; then
+          #   echo "同步 README.md"
+          #   cp source/README.md target/
+          # fi
           
           if [ -f "source/LICENSE" ]; then
             echo "同步 LICENSE"
