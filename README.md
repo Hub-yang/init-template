@@ -7,9 +7,8 @@
 
 <!-- badges 徽章-->
 <div align="center">
-  <!-- npm version -->
-  <a href="https://www.npmjs.com/package/{{REPO_NAME}}"><img src="https://img.shields.io/npm/v/{{REPO_NAME}}" alt="npm versipn"></a>
   <a href="https://github.com/{{USER_NAME}}/{{REPO_NAME}}"><img src="https://img.shields.io/github/package-json/v/{{USER_NAME}}/{{REPO_NAME}}?style=flat-square&label=%20&color=%23000" alt="github version"></a>
+  <a href="https://www.npmjs.com/package/{{REPO_NAME}}"><img src="https://img.shields.io/npm/v/{{REPO_NAME}}" alt="npm versipn"></a>
   <a href="https://github.com/{{USER_NAME}}/{{REPO_NAME}}"><img src="https://img.shields.io/static/v1?label=%F0%9F%8C%9F&message=If%20Useful&&style=flat-square&color=BC4E99" alt="star badge"/></a>
   <a href="https://opensource.org/license/MIT"><img src="https://img.shields.io/npm/l/express?style=flat-square" alt="license"/></a>
 </div>
