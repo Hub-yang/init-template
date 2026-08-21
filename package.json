@@ -2,7 +2,7 @@
   "name": "init-template",
   "type": "module",
   "version": "1.0.0",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.22.0",
   "description": "",
   "author": "HuberyYang",
   "license": "MIT",
@@ -28,9 +28,20 @@
     "license:mit": "npx license MIT",
     "release": "bumpp && npm publish",
     "commitlint:init": "npx hubery commitlint-init",
-    "ts:init":"pnpm add -D typescript @types/node && npx tsc --init"
+    "ts:init": "pnpm add -D typescript @types/node && npx tsc --init",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "devDependencies": {
-    "@huberyyang/todo-scripts": "latest"
+    "@antfu/eslint-config": "^9.3.0",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "@huberyyang/todo-scripts": "latest",
+    "@types/node": "^26.2.0",
+    "eslint": "^10.8.1",
+    "eslint-plugin-format": "^2.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
+    "typescript": "^6.0.3"
   }
 }

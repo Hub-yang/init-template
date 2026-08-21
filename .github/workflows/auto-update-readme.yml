@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'README.md'
+      - README.md
 
 jobs:
   update-readme:
@@ -31,7 +31,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           # 检查是否有文件变动，避免没有变动时 commit 报错
           if [[ -n $(git status --porcelain) ]]; then
             git add README.md
